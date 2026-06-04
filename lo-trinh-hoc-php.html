@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lộ Trình Học PHP — Từ 0 đến 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0f1a;
+    --bg2: #111827;
+    --bg3: #1a2236;
+    --surface: #1e2d45;
+    --border: #2a3f5f;
+    --accent: #4f8ef7;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --muted: #8899aa;
+    --code-bg: #0d1b2a;
+    --font: 'Be Vietnam Pro', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* ─── HERO ─── */
+  .hero {
+    position: relative;
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 24px 60px;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% -10%, rgba(79,142,247,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 80% 100%, rgba(124,58,237,0.12) 0%, transparent 60%);
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(79,142,247,0.12);
+    border: 1px solid rgba(79,142,247,0.3);
+    border-radius: 999px;
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    position: relative;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.2rem, 6vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    position: relative;
+    margin-bottom: 20px;
+  }
+
+  .hero h1 .hl {
+    background: linear-gradient(135deg, var(--accent) 0%, #818cf8 50%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    color: var(--muted);
+    font-size: 1.05rem;
+    max-width: 560px;
+    position: relative;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 32px;
+    margin-top: 40px;
+    position: relative;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-val {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: var(--mono);
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ─── GRID LINES BACKGROUND ─── */
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(79,142,247,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,142,247,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  /* ─── MAIN LAYOUT ─── */
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* ─── SECTION TITLE ─── */
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 56px 0 28px;
+  }
+
+  .section-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .section-title h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+
+  .section-title .badge {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 3px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-left: auto;
+    white-space: nowrap;
+  }
+
+  /* ─── PREREQUISITE CARDS ─── */
+  .prereq-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  .prereq-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .prereq-card:hover { border-color: var(--accent); }
+
+  .prereq-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 14px 14px 0 0;
+  }
+
+  .prereq-card.red::before { background: var(--accent5); }
+  .prereq-card.yellow::before { background: var(--accent4); }
+  .prereq-card.green::before { background: var(--accent3); }
+
+  .prereq-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .prereq-header .tag {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    letter-spacing: 0.5px;
+  }
+
+  .tag-required { background: rgba(239,68,68,0.15); color: #f87171; }
+  .tag-recommended { background: rgba(245,158,11,0.15); color: #fbbf24; }
+  .tag-later { background: rgba(16,185,129,0.15); color: #34d399; }
+
+  .prereq-card h3 { font-size: 0.95rem; font-weight: 700; }
+  .prereq-card p { font-size: 0.82rem; color: var(--muted); margin-top: 6px; }
+
+  .time-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+
+  /* ─── PHASE ─── */
+  .phase {
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    background: var(--bg2);
+  }
+
+  .phase-header {
+    padding: 22px 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s;
+    position: relative;
+  }
+
+  .phase-header:hover { background: rgba(255,255,255,0.02); }
+
+  .phase-number {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 800;
+    font-family: var(--mono);
+    flex-shrink: 0;
+  }
+
+  .phase1 .phase-number { background: rgba(79,142,247,0.15); color: var(--accent); }
+  .phase2 .phase-number { background: rgba(124,58,237,0.15); color: #a78bfa; }
+  .phase3 .phase-number { background: rgba(16,185,129,0.15); color: var(--accent3); }
+
+  .phase-info { flex: 1; }
+  .phase-info h3 { font-size: 1.05rem; font-weight: 700; }
+  .phase-info p { font-size: 0.8rem; color: var(--muted); margin-top: 3px; }
+
+  .phase-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+  }
+
+  .phase-duration {
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--muted);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 3px 10px;
+  }
+
+  .chevron {
+    font-size: 0.8rem;
+    color: var(--muted);
+    transition: transform 0.3s;
+    margin-left: 8px;
+  }
+
+  .phase.open .chevron { transform: rotate(180deg); }
+
+  .phase-body {
+    display: none;
+    padding: 0 28px 28px;
+    border-top: 1px solid var(--border);
+  }
+
+  .phase.open .phase-body { display: block; }
+
+  /* ─── LESSONS ─── */
+  .lesson {
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .lesson:last-of-type { border-bottom: none; }
+
+  .lesson-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  .lesson-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: var(--mono);
+    color: var(--muted);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .lesson-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .lesson-topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 8px 0 0 40px;
+  }
+
+  .topic-chip {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-family: var(--mono);
+    color: #94a3b8;
+  }
+
+  .doc-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin: 10px 0 0 40px;
+    font-size: 11px;
+    color: var(--accent);
+    text-decoration: none;
+    border: 1px solid rgba(79,142,247,0.25);
+    border-radius: 6px;
+    padding: 4px 10px;
+    transition: background 0.2s;
+  }
+
+  .doc-link:hover { background: rgba(79,142,247,0.08); }
+
+  /* ─── EXERCISE ─── */
+  .exercise {
+    background: var(--code-bg);
+    border: 1px solid rgba(79,142,247,0.2);
+    border-left: 3px solid var(--accent);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin: 12px 0 0 40px;
+    font-size: 0.85rem;
+  }
+
+  .exercise-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .exercise p { color: #94a3b8; line-height: 1.6; }
+
+  /* ─── BIG PROJECT ─── */
+  .big-project {
+    background: linear-gradient(135deg, rgba(124,58,237,0.08) 0%, rgba(79,142,247,0.08) 100%);
+    border: 1px solid rgba(124,58,237,0.3);
+    border-radius: 14px;
+    padding: 24px;
+    margin-top: 24px;
+  }
+
+  .big-project-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .trophy {
+    font-size: 1.8rem;
+  }
+
+  .big-project h3 {
+    font-size: 1.05rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #a78bfa, var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .big-project p {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .requirements {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 8px;
+  }
+
+  .req-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: #94a3b8;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .req-item::before {
+    content: '✓';
+    color: var(--accent3);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ─── ROADMAP TIMELINE ─── */
+  .timeline {
+    position: relative;
+    padding-left: 32px;
+    margin: 8px 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), var(--accent3));
+    border-radius: 2px;
+  }
+
+  .timeline-item {
+    position: relative;
+    padding: 12px 0 12px 20px;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -28px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+
+  .timeline-item.t2::before { background: #a78bfa; box-shadow: 0 0 0 2px #a78bfa; }
+  .timeline-item.t3::before { background: var(--accent3); box-shadow: 0 0 0 2px var(--accent3); }
+  .timeline-item.t4::before { background: var(--accent4); box-shadow: 0 0 0 2px var(--accent4); }
+  .timeline-item.t5::before { background: #ec4899; box-shadow: 0 0 0 2px #ec4899; }
+  .timeline-item.t6::before { background: #06b6d4; box-shadow: 0 0 0 2px #06b6d4; }
+
+  .timeline-title { font-size: 0.88rem; font-weight: 700; }
+  .timeline-sub { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+  .timeline-dur {
+    display: inline-block;
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--accent);
+    margin-top: 4px;
+  }
+
+  /* ─── TIP BOX ─── */
+  .tip-box {
+    background: rgba(16,185,129,0.06);
+    border: 1px solid rgba(16,185,129,0.2);
+    border-left: 3px solid var(--accent3);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-top: 28px;
+  }
+
+  .tip-box h4 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent3);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .tip-box ul { padding-left: 16px; }
+  .tip-box li { font-size: 0.82rem; color: #94a3b8; margin-bottom: 5px; }
+  .tip-box li strong { color: var(--text); }
+
+  /* ─── TOOL CARDS ─── */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .tool-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .tool-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+  .tool-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.06);
+  }
+
+  .tool-card h4 { font-size: 0.85rem; font-weight: 700; }
+  .tool-card p { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    text-align: center;
+    padding: 40px 24px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+
+  footer a { color: var(--accent); text-decoration: none; }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border), transparent);
+    margin: 40px 0;
+  }
+
+  /* ─── CHECKLIST ─── */
+  .checklist {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-top: 12px;
+  }
+
+  .checklist h4 { font-size: 0.85rem; font-weight: 700; color: var(--accent4); margin-bottom: 12px; }
+
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 0.83rem;
+    color: #94a3b8;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .check-item:last-child { border-bottom: none; }
+
+  .check-item input[type=checkbox] {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    accent-color: var(--accent);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .check-item.done { text-decoration: line-through; color: var(--muted); }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero > * { animation: fadeUp 0.6s ease forwards; }
+  .hero > *:nth-child(2) { animation-delay: 0.1s; }
+  .hero > *:nth-child(3) { animation-delay: 0.2s; }
+  .hero > *:nth-child(4) { animation-delay: 0.3s; }
+  .hero > *:nth-child(5) { animation-delay: 0.4s; }
+
+  /* ─── PRINT ─── */
+  @media print {
+    .phase-body { display: block !important; }
+    .chevron { display: none; }
+    body { background: white; color: black; }
+  }
+
+  @media (max-width: 640px) {
+    .phase-header { padding: 18px 20px; flex-wrap: wrap; }
+    .phase-body { padding: 0 20px 20px; }
+    .exercise, .lesson-topics, .doc-link, .req-item { margin-left: 0; }
+    .hero-stats { gap: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="grid-bg"></div>
+  <div class="hero-tag">🗺️ Lộ Trình Học Tập</div>
+  <h1>Học <span class="hl">PHP</span> từ<br>0 đến 1</h1>
+  <p>Dựa theo tài liệu chính thức <strong>php.net</strong> — dành cho người chưa có nền tảng lập trình</p>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-val">4–6</div>
+      <div class="stat-label">Tháng học</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">3</div>
+      <div class="stat-label">Giai đoạn</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">3</div>
+      <div class="stat-label">Dự án lớn</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">20+</div>
+      <div class="stat-label">Bài tập nhỏ</div>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+
+  <!-- CHUẨN BỊ -->
+  <div class="section-title">
+    <div class="section-icon" style="background:rgba(239,68,68,0.12)">🔴</div>
+    <h2>Bước 0 — Chuẩn Bị Trước Khi Học</h2>
+    <span class="badge">~3 tuần</span>
+  </div>
+
+  <div class="prereq-grid">
+    <div class="prereq-card red">
+      <div class="prereq-header">
+        <span>🌐</span>
+        <span class="tag tag-required">Bắt buộc</span>
+      </div>
+      <h3>HTML Cơ Bản</h3>
+      <p>PHP xuất ra HTML — không biết HTML, bạn sẽ không hiểu PHP đang làm gì.</p>
+      <div class="time-badge">⏱ 1–2 tuần</div>
+    </div>
+
+    <div class="prereq-card red">
+      <div class="prereq-header">
+        <span>🌍</span>
+        <span class="tag tag-required">Bắt buộc</span>
+      </div>
+      <h3>HTTP & Web hoạt động thế nào</h3>
+      <p>Hiểu client/server, request/response, URL, port là gì.</p>
+      <div class="time-badge">⏱ 2–3 ngày</div>
+    </div>
+
+    <div class="prereq-card yellow">
+      <div class="prereq-header">
+        <span>🎨</span>
+        <span class="tag tag-recommended">Nên có</span>
+      </div>
+      <h3>CSS Cơ Bản</h3>
+      <p>Giúp trang web của bạn có hình dạng khi làm bài tập.</p>
+      <div class="time-badge">⏱ 1–2 tuần</div>
+    </div>
+
+    <div class="prereq-card green">
+      <div class="prereq-header">
+        <span>🔧</span>
+        <span class="tag tag-required">Bắt buộc</span>
+      </div>
+      <h3>Môi Trường Dev</h3>
+      <p>Laragon + VS Code + PHP Intelephense. PHP cần server để chạy.</p>
+      <div class="time-badge">⏱ 1 ngày</div>
+    </div>
+
+    <div class="prereq-card green">
+      <div class="prereq-header">
+        <span>🐙</span>
+        <span class="tag tag-later">Học sau tuần 3</span>
+      </div>
+      <h3>Git Cơ Bản</h3>
+      <p>Lưu lịch sử code, không sợ mất. Bắt buộc khi đi làm thực tế.</p>
+      <div class="time-badge">⏱ 2–3 ngày</div>
+    </div>
+
+    <div class="prereq-card yellow">
+      <div class="prereq-header">
+        <span>🗄️</span>
+        <span class="tag tag-recommended">Học song song</span>
+      </div>
+      <h3>MySQL Cơ Bản</h3>
+      <p>Học khi đến phần PHP + Database. SELECT, INSERT, UPDATE, DELETE.</p>
+      <div class="time-badge">⏱ 1 tuần</div>
+    </div>
+  </div>
+
+  <!-- TOOLS -->
+  <div class="section-title" style="margin-top:36px">
+    <div class="section-icon" style="background:rgba(245,158,11,0.12)">🛠️</div>
+    <h2>Công Cụ Cần Cài</h2>
+  </div>
+
+  <div class="tools-grid">
+    <div class="tool-card">
+      <div class="tool-icon">🦅</div>
+      <div>
+        <h4>Laragon</h4>
+        <p>PHP + Apache + MySQL. Cài 1 click, chạy ngay. laragon.org</p>
+      </div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">💙</div>
+      <div>
+        <h4>VS Code</h4>
+        <p>Code editor miễn phí, mạnh mẽ. code.visualstudio.com</p>
+      </div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🧩</div>
+      <div>
+        <h4>PHP Intelephense</h4>
+        <p>Extension VS Code: gợi ý code, kiểm tra lỗi PHP real-time.</p>
+      </div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🔍</div>
+      <div>
+        <h4>PHP Debug</h4>
+        <p>Extension VS Code: debug từng dòng PHP với Xdebug.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="checklist" style="margin-top:20px">
+    <h4>✅ Checklist Cài Đặt</h4>
+    <label class="check-item"><input type="checkbox"> Cài Laragon, Start All → Apache + MySQL xanh</label>
+    <label class="check-item"><input type="checkbox"> Mở http://localhost → thấy trang Laragon welcome</label>
+    <label class="check-item"><input type="checkbox"> Cài VS Code + PHP Intelephense + PHP Debug</label>
+    <label class="check-item"><input type="checkbox"> Tạo thư mục C:\laragon\www\hoc-php\</label>
+    <label class="check-item"><input type="checkbox"> Viết file index.php → chạy được trên localhost</label>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- PHASE 1 -->
+  <div class="section-title">
+    <div class="section-icon" style="background:rgba(79,142,247,0.12)">📦</div>
+    <h2>Các Giai Đoạn Học PHP</h2>
+  </div>
+
+  <div class="phase phase1 open">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-number">01</div>
+      <div class="phase-info">
+        <h3>PHP Cơ Bản</h3>
+        <p>Biến, kiểu dữ liệu, vòng lặp, hàm, mảng, chuỗi</p>
+      </div>
+      <div class="phase-meta">
+        <span class="phase-duration">4–6 tuần</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="phase-body">
+
+      <div class="lesson">
+        <div class="lesson-header">
+          <div class="lesson-num">1.1</div>
+          <div>
+            <div class="lesson-title">PHP là gì & Cách hoạt động</div>
+          </div>
+        </div>
+        <div class="lesson-topics">
+          <span class="topic-chip">&lt;?php ?&gt;</span>
+          <span class="topic-chip">echo / print</span>
+          <span class="topic-chip">Client-Server</span>
+          <span class="topic-chip">phpinfo()</span>
+        </div>
+        <a class="doc-link" href="https://www.php.net/manual/en/introduction.php" target="_blank">📖 php.net → Introduction</a>
+        <div class="exercise">
+          <div class="exercise-label">🏋️ Bài tập nhỏ</div>
+          <p>Tạo file <code>hello.php</code> — in ra "Xin chào [tên bạn]!", ngày giờ hiện tại và phiên bản PHP.</p>
+        </div>
+      </div>
+
+      <div class="lesson">
+        <div class="lesson-header">
+          <div class="lesson-num">1.2</div>
+          <div>
+            <div class="lesson-title">Biến & Kiểu Dữ Liệu</div>
+          </div>
+        </div>
+        <div class="lesson-topics">
+          <span class="topic-chip">$bien</span>
+          <span class="topic-chip">string / int / float</span>
+          <span class="topic-chip">bool / null</span>
+          <span class="topic-chip">var_dump()</span>
+          <span class="topic-chip">gettype()</span>
+        </div>
+        <a class="doc-link" href="https://www.php.net/manual/en/language.types.php" target="_blank">📖 php.net → Types</a>
+        <div class="exercise">
+          <div class="exercise-label">🏋️ Bài tập nhỏ</div>
+          <p>Tạo các biến lưu: tên, tuổi, điểm GPA, trạng thái tốt nghiệp. In tất cả bằng <code>echo</code> + kiểm tra kiểu bằng <code>var_dump()</code>.</p>
+        </div>
+      </div>
+
+      <div class="lesson">
+        <div class="lesson-header">
+          <div class="lesson-num">1.3</div>
+          <div><div class="lesson-title">Toán Tử</div></div>
+        </div>
+        <div class="lesson-topics">
+          <span class="topic-chip">+ - * / %</span>
+          <span class="topic-chip">== === !=</span>
+          <span class="topic-chip">&amp;&amp; || !</span>
+          <span class="topic-chip">. (nối chuỗi)</span>
+        </div>
+        <a class="doc-link" href="https://www.php.net/manual/en/language.operators.php" target="_blank">📖 php.net → Operators</a>
+        <div class="exercise">
+          <div class="exercise-label">🏋️ Bài tập nhỏ</div>
+          <p>Tính tiền sau thuế: nhập giá gốc, tính thêm 10% VAT, in ra kết quả có định dạng đẹp.</p>
+        </div>
+      </div>
+
+      <div class="lesson">
+        <div class="lesson-header">
+          <div class="lesson-num">1.4</div>
+          <div><div class="lesson-title">Cấu Trúc Điều Kiện</div></div>
+        </div>
+        <div class="lesson-topics">
+          <span class="topic-chip">if / elseif / else</span>
+          <span class="topic-chip">switch</span>
+          <span class="topic-chip">match</span>
+          <span class="topic-chip">Ternary ?: </span>
+        </div>
+        <a class="doc-link" href="https://www.php.net/manual/en/language.control-structures.php" target="_blank">📖 php.net → Control Structures</a>
+        <div class="exercise">
+          <div class="exercise-label">🏋️ Bài tập nhỏ</div>
+          <p>Nhập điểm số (0–10) → in ra xếp loại: Xuất sắc / Giỏi / Khá / Trung bình / Yếu.</p>
+        </div>
+      </div>
+
+      <div class="lesson">
+        <div class="lesson-header">
+          <div class="lesson-num">1.5</div>
+          <div><div class="lesson-title">Vòng Lặp</div></div>
+        </div>
+        <div class="lesson-topics">
+          <span class="topic-chip">for</span>
+          <span class="topic-chip">while</span>
+          <span class="topic-chip">do...while</span>
+          <span class="topic-chip">foreach</span>
+          <span class="topic-chip">break / continue</span>
+        </div>
+        <a class="doc-link" href="https://www.php.net/manual/en/control-structures.for.php" target="_blank">📖 php.net → for / foreach / while</a>
+        <div class="exercise">
+          <div class="exercise-label">🏋️ Bài tập nhỏ</div>
+          <p>In bảng cửu chương từ 2 đến 9 ra màn hình HTML dạng <code>&lt;table&gt;</code> có style.</p>
+        </div>
+      </div>
+
+      <div class="lesson">
+        <div class="lesson-header">
+          <div class="lesson-num">1.6</div>
+          <div><div class="lesson-title">Hàm (Function)</div></div>
+        </div>
+        <div class="lesson-topics">
+          <span class="topic-chip">function</span>
+          <span class="topic-chip">return</span>
+          <span class="topic-chip">Tham số mặc định</span>
+          <span class="topic-chip">strlen() / date()</span>
+        </div>
+        <a class="doc-link" href="https://www.php.net/manual/en/language.functions.php" target="_blank">📖 php.net → Functions</a>
+        <div class="exercise">
+          <div class="exercise-label">🏋️ Bài tập nhỏ</div>
+          <p>Viết hàm <code>tinhDienTich($dai, $rong)</code> và <code>tinhChuVi()</code> cho hình chữ nhật và hình tròn.</p>
+        </div>
+      </div>
+
+      <div class="lesson">
+        <div class="lesson-header">
+          <div class="lesson-num">1.7</div>
+          <div><div class="lesson-title">Mảng (Array)</div></div>
+        </div>
+        <div class="lesson-topics">
+          <span class="topic-chip">Indexed array</span>
+          <span class="topic-chip">Associative array</span>
+          <span class="topic-chip">Đa chiều</span>
+          <span class="topic-chip">array_map / filter / sort</span>
+          <span class="topic-chip">in_array</span>
+        </div>
+        <a class="doc-link" href="https://www.php.net/manual/en/ref.array.php" target="_blank">📖 php.net → Array Functions</a>
+        <div class="exercise">
+          <div class="exercise-label">🏋️ Bài tập nhỏ</div>
+          <p>Tạo mảng 10 sản phẩm (tên + giá) → in ra danh sách HTML, tính tổng tiền, tìm sản phẩm đắt nhất.</p>
+        </div>
+      </div>
+
+      <div class="lesson">
+        <div class="lesson-header">
+          <div class="lesson-num">1.8</div>
+          <div><div class="lesson-title">Chuỗi (String)</div></div>
+        </div>
+        <div class="lesson-topics">
+          <span class="topic-chip">strlen / substr</span>
+          <span class="topic-chip">str_replace</span>
+          <span class="topic-chip">explode / implode</span>
+          <span class="topic-chip">trim / strtolower</span>
+          <span class="topic-chip">Heredoc</span>
+        </div>
+        <a class="doc-link" href="https://www.php.net/manual/en/ref.strings.php" target="_blank">📖 php.net → String Functions</a>
+        <div class="exercise">
+          <div class="exercise-label">🏋️ Bài tập nhỏ</div>
+          <p>Viết hàm tạo <strong>slug</strong> URL từ tiêu đề: <code>"Học PHP Cơ Bản"</code> → <code>"hoc-php-co-ban"</code></p>
+        </div>
+      </div>
+
+      <!-- Big Project 1 -->
+      <div class="big-project">
+        <div class="big-project-header">
+          <span class="trophy">🏆</span>
+          <div>
+            <h3>Dự Án Lớn 1 — Trang Web Giới Thiệu Cá Nhân Động</h3>
+            <p>Áp dụng: biến, mảng, điều kiện, vòng lặp, hàm, chuỗi, include</p>
+          </div>
+        </div>
+        <div class="requirements">
+          <div class="req-item">Trang chủ: tên, ảnh, giới thiệu bản thân</div>
+          <div class="req-item">Trang "Kỹ năng" từ mảng → render HTML</div>
+          <div class="req-item">Trang "Dự án" dạng card (tên, mô tả, link)</div>
+          <div class="req-item">Trang "Liên hệ" — form HTML cơ bản</div>
+          <div class="req-item">Dùng include/require cho header & footer chung</div>
+          <div class="req-item">CSS đơn giản cho trang trông đẹp</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="phase phase2" style="margin-top:16px">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-number">02</div>
+      <div class="phase-info">
+        <h3>PHP Trung Cấp</h3>
+        <p>Form, Session, Cookie, MySQL/PDO, Upload file, Error handling</p>
+      </div>
+      <div class="phase-meta">
+        <span class="phase-duration">4–6 tuần</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="phase-body">
+
+      <div class="lesson">
+        <div class="lesson-header">
+          <div class="lesson-num">2.1</div>
+          <div><div class="lesson-title">Form & Xử Lý Dữ Liệu Người Dùng</div></div>
+        </div>
+        <div class="lesson-topics">
+          <span class="topic-chip">$_GET / $_POST</span>
+          <span class="topic-chip">$_REQUEST</span>
+          <span class="topic-chip">htmlspecialchars()</span>
+          <span class="topic-chip">filter_input()</span>
+          <span class="topic-chip">Chống XSS cơ bản</span>
+        </div>
+        <a class="doc-link" href="https://www.php.net/manual/en/reserved.variables.post.php" target="_blank">📖 php.net → $_POST / $_GET</a>
+        <div class="exercise">
+          <div class="exercise-label">🏋️ Bài tập nhỏ</div>
+          <p>Form tính BMI: nhập chiều cao + cân nặng → PHP tính và in kết quả + phân loại (Gầy/Bình thường/Thừa cân).</p>
+        </div>
+      </div>
+
+      <div class="lesson">
+        <div class="lesson-header">
+          <div class="lesson-num">2.2</div>
+          <div><div class="lesson-title">Include, Require & Tách File</div></div>
+        </div>
+        <div class="lesson-topics">
+          <span class="topic-chip">include</span>
+          <span class="topic-chip">require</span>
+          <span class="topic-chip">include_once</span>
+          <span class="topic-chip">require_once</span>
+          <span class="topic-chip">Tư duy component</span>
+        </div>
+        <a class="doc-link" href="https://www.php.net/manual/en/function.include.php" target="_blank">📖 php.net → include / require</a>
+        <div class="exercise">
+          <div class="exercise-label">🏋️ Bài tập nhỏ</div>
+          <p>Tách header, footer, sidebar thành file riêng. Tạo 3 trang dùng chung cấu trúc này.</p>
+        </div>
+      </div>
+
+      <div class="lesson">
+        <div class="lesson-header">
+          <div class="lesson-num">2.3</div>
+          <div><div class="lesson-title">Session & Cookie</div></div>
+        </div>
+        <div class="lesson-topics">
+          <span class="topic-chip">session_start()</span>
+          <span class="topic-chip">$_SESSION</span>
+          <span class="topic-chip">session_destroy()</span>
+          <span class="topic-chip">setcookie()</span>
+          <span class="topic-chip">$_COOKIE</span>
+        </div>
+        <a class="doc-link" href="https://www.php.net/manual/en/book.session.php" target="_blank">📖 php.net → Sessions</a>
+        <div class="exercise">
+          <div class="exercise-label">🏋️ Bài tập nhỏ</div>
+          <p>Trang đếm số lần user truy cập (session) + Trang ghi nhớ tên user 7 ngày (cookie).</p>
+        </div>
+      </div>
+
+      <div class="lesson">
+        <div class="lesson-header">
+          <div class="lesson-num">2.4</div>
+          <div><div class="lesson-title">PHP & MySQL (PDO) — CRUD đầy đủ</div></div>
+        </div>
+        <div class="lesson-topics">
+          <span class="topic-chip">PDO connect</span>
+          <span class="topic-chip">SELECT / INSERT</span>
+          <span class="topic-chip">UPDATE / DELETE</span>
+          <span class="topic-chip">Prepared Statements</span>
+          <span class="topic-chip">fetch() / fetchAll()</span>
+        </div>
+        <a class="doc-link" href="https://www.php.net/manual/en/book.pdo.php" target="_blank">📖 php.net → PDO</a>
+        <div class="exercise">
+          <div class="exercise-label">🏋️ Bài tập nhỏ</div>
+          <p>Tạo bảng <code>students</code> trong MySQL. Viết trang thêm / xem / xóa sinh viên.</p>
+        </div>
+      </div>
+
+      <div class="lesson">
+        <div class="lesson-header">
+          <div class="lesson-num">2.5</div>
+          <div><div class="lesson-title">Upload File</div></div>
+        </div>
+        <div class="lesson-topics">
+          <span class="topic-chip">$_FILES</span>
+          <span class="topic-chip">move_uploaded_file()</span>
+          <span class="topic-chip">Validate type/size</span>
+          <span class="topic-chip">Rename file an toàn</span>
+        </div>
+        <a class="doc-link" href="https://www.php.net/manual/en/features.file-upload.php" target="_blank">📖 php.net → File Upload</a>
+        <div class="exercise">
+          <div class="exercise-label">🏋️ Bài tập nhỏ</div>
+          <p>Form upload ảnh đại diện → lưu vào <code>uploads/</code> → hiển thị ảnh sau khi upload thành công.</p>
+        </div>
+      </div>
+
+      <div class="lesson">
+        <div class="lesson-header">
+          <div class="lesson-num">2.6</div>
+          <div><div class="lesson-title">Xử Lý Lỗi (Error Handling)</div></div>
+        </div>
+        <div class="lesson-topics">
+          <span class="topic-chip">try / catch / finally</span>
+          <span class="topic-chip">throw new Exception()</span>
+          <span class="topic-chip">set_error_handler()</span>
+          <span class="topic-chip">Custom Exception class</span>
+        </div>
+        <a class="doc-link" href="https://www.php.net/manual/en/language.exceptions.php" target="_blank">📖 php.net → Exceptions</a>
+        <div class="exercise">
+          <div class="exercise-label">🏋️ Bài tập nhỏ</div>
+          <p>Viết hàm chia số có xử lý Exception khi chia cho 0. Hiển thị thông báo lỗi thân thiện.</p>
+        </div>
+      </div>
+
+      <!-- Big Project 2 -->
+      <div class="big-project">
+        <div class="big-project-header">
+          <span class="trophy">🏆</span>
+          <div>
+            <h3>Dự Án Lớn 2 — To-Do List có Đăng Nhập</h3>
+            <p>Áp dụng: Form, Session, MySQL/PDO, CRUD đầy đủ, Upload</p>
+          </div>
+        </div>
+        <div class="requirements">
+          <div class="req-item">Đăng ký / Đăng nhập / Đăng xuất (session)</div>
+          <div class="req-item">Mỗi user có danh sách task riêng</div>
+          <div class="req-item">Thêm / sửa / xóa task</div>
+          <div class="req-item">Đánh dấu hoàn thành task</div>
+          <div class="req-item">Lọc: Tất cả / Đang làm / Đã xong</div>
+          <div class="req-item">Bảo vệ trang (chưa login → redirect)</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="phase phase3" style="margin-top:16px">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-number">03</div>
+      <div class="phase-info">
+        <h3>PHP Nâng Cao</h3>
+        <p>OOP, Composer, REST API, MVC Pattern, Bảo mật</p>
+      </div>
+      <div class="phase-meta">
+        <span class="phase-duration">6–8 tuần</span>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="phase-body">
+
+      <div class="lesson">
+        <div class="lesson-header">
+          <div class="lesson-num">3.1</div>
+          <div><div class="lesson-title">Lập Trình Hướng Đối Tượng (OOP)</div></div>
+        </div>
+        <div class="lesson-topics">
+          <span class="topic-chip">class / object / new</span>
+          <span class="topic-chip">__construct()</span>
+          <span class="topic-chip">extends / override</span>
+          <span class="topic-chip">interface / abstract</span>
+          <span class="topic-chip">trait</span>
+          <span class="topic-chip">public/private/protected</span>
+          <span class="topic-chip">static</span>
+        </div>
+        <a class="doc-link" href="https://www.php.net/manual/en/language.oop5.php" target="_blank">📖 php.net → Classes & Objects</a>
+        <div class="exercise">
+          <div class="exercise-label">🏋️ Bài tập nhỏ</div>
+          <p>Tạo class <code>BankAccount</code> với <code>deposit()</code>, <code>withdraw()</code>, <code>getBalance()</code>. Tạo class <code>SavingsAccount</code> kế thừa thêm lãi suất.</p>
+        </div>
+      </div>
+
+      <div class="lesson">
+        <div class="lesson-header">
+          <div class="lesson-num">3.2</div>
+          <div><div class="lesson-title">Namespace & Autoloading</div></div>
+        </div>
+        <div class="lesson-topics">
+          <span class="topic-chip">namespace</span>
+          <span class="topic-chip">use</span>
+          <span class="topic-chip">PSR-4</span>
+          <span class="topic-chip">spl_autoload_register()</span>
+        </div>
+        <a class="doc-link" href="https://www.php.net/manual/en/language.namespaces.php" target="_blank">📖 php.net → Namespaces</a>
+      </div>
+
+      <div class="lesson">
+        <div class="lesson-header">
+          <div class="lesson-num">3.3</div>
+          <div><div class="lesson-title">Composer & Thư Viện Bên Ngoài</div></div>
+        </div>
+        <div class="lesson-topics">
+          <span class="topic-chip">composer.json</span>
+          <span class="topic-chip">require / install</span>
+          <span class="topic-chip">autoload</span>
+          <span class="topic-chip">PHPMailer</span>
+          <span class="topic-chip">phpdotenv</span>
+        </div>
+        <a class="doc-link" href="https://getcomposer.org" target="_blank">🔗 getcomposer.org</a>
+        <div class="exercise">
+          <div class="exercise-label">🏋️ Bài tập nhỏ</div>
+          <p>Dùng PHPMailer gửi email xác nhận khi user đăng ký tài khoản. Ẩn thông tin nhạy cảm bằng <code>.env</code>.</p>
+        </div>
+      </div>
+
+      <div class="lesson">
+        <div class="lesson-header">
+          <div class="lesson-num">3.4</div>
+          <div><div class="lesson-title">Regular Expressions (Regex)</div></div>
+        </div>
+        <div class="lesson-topics">
+          <span class="topic-chip">preg_match()</span>
+          <span class="topic-chip">preg_replace()</span>
+          <span class="topic-chip">preg_split()</span>
+          <span class="topic-chip">Validate email/phone</span>
+        </div>
+        <a class="doc-link" href="https://www.php.net/manual/en/book.pcre.php" target="_blank">📖 php.net → PCRE Regex</a>
+        <div class="exercise">
+          <div class="exercise-label">🏋️ Bài tập nhỏ</div>
+          <p>Viết hàm validate: email, số điện thoại VN (10 số, bắt đầu 0), và mật khẩu mạnh (≥8 ký tự, có số + chữ hoa).</p>
+        </div>
+      </div>
+
+      <div class="lesson">
+        <div class="lesson-header">
+          <div class="lesson-num">3.5</div>
+          <div><div class="lesson-title">PHP & JSON / REST API</div></div>
+        </div>
+        <div class="lesson-topics">
+          <span class="topic-chip">json_encode()</span>
+          <span class="topic-chip">json_decode()</span>
+          <span class="topic-chip">cURL</span>
+          <span class="topic-chip">header('Content-Type: application/json')</span>
+          <span class="topic-chip">REST API tự xây</span>
+        </div>
+        <a class="doc-link" href="https://www.php.net/manual/en/function.json-encode.php" target="_blank">📖 php.net → json_encode / decode</a>
+        <div class="exercise">
+          <div class="exercise-label">🏋️ Bài tập nhỏ</div>
+          <p>Gọi API thời tiết (OpenWeatherMap miễn phí) → hiển thị thời tiết hiện tại theo thành phố nhập từ form.</p>
+        </div>
+      </div>
+
+      <div class="lesson">
+        <div class="lesson-header">
+          <div class="lesson-num">3.6</div>
+          <div><div class="lesson-title">MVC Pattern</div></div>
+        </div>
+        <div class="lesson-topics">
+          <span class="topic-chip">Model</span>
+          <span class="topic-chip">View</span>
+          <span class="topic-chip">Controller</span>
+          <span class="topic-chip">Router đơn giản</span>
+          <span class="topic-chip">Mini framework</span>
+        </div>
+        <div class="exercise">
+          <div class="exercise-label">🏋️ Bài tập nhỏ</div>
+          <p>Tự xây mini MVC: Router đọc URL → gọi đúng Controller → Controller dùng Model lấy dữ liệu → truyền vào View.</p>
+        </div>
+      </div>
+
+      <div class="lesson">
+        <div class="lesson-header">
+          <div class="lesson-num">3.7</div>
+          <div><div class="lesson-title">Bảo Mật PHP</div></div>
+        </div>
+        <div class="lesson-topics">
+          <span class="topic-chip">SQL Injection → PDO</span>
+          <span class="topic-chip">XSS → htmlspecialchars</span>
+          <span class="topic-chip">CSRF Token</span>
+          <span class="topic-chip">password_hash()</span>
+          <span class="topic-chip">password_verify()</span>
+        </div>
+        <a class="doc-link" href="https://www.php.net/manual/en/security.php" target="_blank">📖 php.net → Security</a>
+        <div class="exercise">
+          <div class="exercise-label">🏋️ Bài tập nhỏ</div>
+          <p>Audit lại Dự án 2 (To-Do List): thêm CSRF token, hash mật khẩu đúng cách, xử lý XSS đầy đủ.</p>
+        </div>
+      </div>
+
+      <!-- Big Project 3 -->
+      <div class="big-project">
+        <div class="big-project-header">
+          <span class="trophy">🏆</span>
+          <div>
+            <h3>Dự Án Lớn 3 — Blog CMS Mini (Tự Xây)</h3>
+            <p>Áp dụng toàn bộ kiến thức: OOP + MVC + API + Security</p>
+          </div>
+        </div>
+        <div class="requirements">
+          <div class="req-item">Kiến trúc MVC đầy đủ</div>
+          <div class="req-item">Admin: quản lý bài viết, danh mục, user</div>
+          <div class="req-item">Frontend: trang chủ, trang bài viết, tìm kiếm</div>
+          <div class="req-item">Phân trang (pagination)</div>
+          <div class="req-item">Phân quyền: admin / editor / reader</div>
+          <div class="req-item">Upload ảnh thumbnail bài viết</div>
+          <div class="req-item">SEO-friendly URL (slug)</div>
+          <div class="req-item">Bảo mật đầy đủ: CSRF, XSS, SQL Injection</div>
+          <div class="req-item">REST API endpoint trả JSON</div>
+          <div class="req-item">Comment system cơ bản</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- TIMELINE OVERVIEW -->
+  <div class="section-title">
+    <div class="section-icon" style="background:rgba(16,185,129,0.12)">🗺️</div>
+    <h2>Tổng Quan Lộ Trình</h2>
+    <span class="badge">4–6 tháng</span>
+  </div>
+
+  <div style="background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:28px 28px 20px;">
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-title">Chuẩn Bị</div>
+        <div class="timeline-sub">HTML, CSS, HTTP, Laragon + VS Code, Git cơ bản</div>
+        <span class="timeline-dur">~2–3 tuần</span>
+      </div>
+      <div class="timeline-item t2">
+        <div class="timeline-title">Giai Đoạn 1 — PHP Cơ Bản</div>
+        <div class="timeline-sub">Biến, hàm, mảng, vòng lặp, chuỗi → Dự án 1</div>
+        <span class="timeline-dur">~4–6 tuần</span>
+      </div>
+      <div class="timeline-item t3">
+        <div class="timeline-title">Giai Đoạn 2 — PHP Trung Cấp</div>
+        <div class="timeline-sub">Form, Session, MySQL/PDO, Upload → Dự án 2</div>
+        <span class="timeline-dur">~4–6 tuần</span>
+      </div>
+      <div class="timeline-item t4">
+        <div class="timeline-title">Giai Đoạn 3 — PHP Nâng Cao</div>
+        <div class="timeline-sub">OOP, Composer, API, MVC, Security → Dự án 3</div>
+        <span class="timeline-dur">~6–8 tuần</span>
+      </div>
+      <div class="timeline-item t5">
+        <div class="timeline-title">Tiếp Theo: WordPress hoặc Laravel</div>
+        <div class="timeline-sub">Đã đủ nền tảng để học framework thực chiến</div>
+        <span class="timeline-dur">Tiếp tục →</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIPS -->
+  <div class="tip-box" style="margin-top:28px">
+    <h4>💡 Mẹo Học Hiệu Quả</h4>
+    <ul>
+      <li><strong>Thực hành 70%, lý thuyết 30%</strong> — đọc xong là gõ ngay, đừng để hôm sau.</li>
+      <li><strong>Học 1–2 tiếng/ngày đều đặn</strong> hiệu quả hơn học 8 tiếng cuối tuần.</li>
+      <li><strong>Debug là kỹ năng</strong> — đừng sợ lỗi, dùng <code>var_dump()</code> và <code>console.log()</code> thường xuyên.</li>
+      <li><strong>Đọc source code</strong> các plugin/theme nổi tiếng sau khi xong giai đoạn 3.</li>
+      <li><strong>Đặt câu hỏi đúng cách</strong> trên Stack Overflow: mô tả lỗi + code + mong muốn.</li>
+      <li><strong>Commit code lên GitHub</strong> sau mỗi bài tập — tạo portfolio từ sớm.</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>Tài liệu tham khảo chính: <a href="https://www.php.net/manual/en/" target="_blank">php.net/manual</a> &nbsp;·&nbsp; Môi trường: <a href="https://laragon.org" target="_blank">laragon.org</a></p>
+  <p style="margin-top:8px; font-size:0.72rem;">Lộ trình dành cho người bắt đầu từ zero · Học 1–2 tiếng/ngày · Hoàn thành trong 4–6 tháng</p>
+</footer>
+
+<script>
+  function togglePhase(header) {
+    const phase = header.parentElement;
+    phase.classList.toggle('open');
+  }
+
+  // Checkbox persist trong session
+  document.querySelectorAll('.check-item input').forEach(cb => {
+    const key = 'check_' + cb.closest('.checklist').querySelector('h4').textContent + '_' + cb.nextSibling.textContent.trim().slice(0, 20);
+    if (sessionStorage.getItem(key) === '1') {
+      cb.checked = true;
+      cb.closest('.check-item').classList.add('done');
+    }
+    cb.addEventListener('change', function() {
+      this.closest('.check-item').classList.toggle('done', this.checked);
+      sessionStorage.setItem(key, this.checked ? '1' : '0');
+    });
+  });
+</script>
+
+</body>
+</html>
